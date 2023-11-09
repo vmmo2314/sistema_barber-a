@@ -37,6 +37,14 @@ class agendarCita:
 
         self.barberoSeleccionado = ""
 
+        #booleanos saber día de la semana presionado
+        self.dia1 = False
+        self.dia2 = False
+        self.dia3 = False
+        self.dia4 = False
+        self.dia5 = False
+        self.dia6 = False
+
         self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Servicio"), show="headings")
         self.treeAgenda.bind("<ButtonRelease-1>", self.actualizarDatosEntrada)
 
@@ -67,25 +75,186 @@ class agendarCita:
 
         self.treeAgenda.place(relx=0.5, rely=0.5, width=1000, height=400, anchor=tk.CENTER)
         self.cargarCitas()
+        self.botonesPorDia()
         self.cargarBotonesIzquierdos()
         self.ingresarDatosCliente()
 
     def cargarCitas(self):
         # Horarios disponibles
-        horarios = [
-            "11:00 AM", "",  # Espacio vacío para agendar cita
-            "12:00 PM", "",  # Espacio vacío para agendar cita
-            "01:00 PM", "",  # Espacio vacío para agendar cita
-            "04:00 PM", "",  # Espacio vacío para agendar cita
-            "05:00 PM", "",  # Espacio vacío para agendar cita
-            "06:00 PM", "",  # Espacio vacío para agendar cita
-            "07:00 PM", "",  # Espacio vacío para agendar cita
-            "08:00 PM", ""  # Espacio vacío para agendar cita
-        ]
+        if self.dia1:
+            if hasattr(self, "AdvertenciaDia"):
+                self.AdvertenciaDia.destroy()
+            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del martes",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+            horarios = [
+                "11:00 AM", "",  # Espacio vacío para agendar cita
+                "12:00 PM", "",  # Espacio vacío para agendar cita
+                "01:00 PM", "",  # Espacio vacío para agendar cita
+                "04:00 PM", "",  # Espacio vacío para agendar cita
+                "05:00 PM", "",  # Espacio vacío para agendar cita
+                "06:00 PM", "",  # Espacio vacío para agendar cita
+                "07:00 PM", "",  # Espacio vacío para agendar cita
+                "08:00 PM", ""  # Espacio vacío para agendar cita
+            ]
+        elif self.dia2:
+            if hasattr(self, "AdvertenciaDia"):
+                self.AdvertenciaDia.destroy()
+            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del miercoles",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+            horarios = [
+                "11:00 AM", "",  # Espacio vacío para agendar cita
+                "12:00 PM", "",  # Espacio vacío para agendar cita
+                "01:00 PM", "",  # Espacio vacío para agendar cita
+                "04:00 PM", "",  # Espacio vacío para agendar cita
+                "05:00 PM", "",  # Espacio vacío para agendar cita
+                "06:00 PM", "",  # Espacio vacío para agendar cita
+                "07:00 PM", "",  # Espacio vacío para agendar cita
+                "08:00 PM", ""  # Espacio vacío para agendar cita
+            ]
+        elif self.dia3:
+            if hasattr(self, "AdvertenciaDia"):
+                self.AdvertenciaDia.destroy()
+            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del jueves",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
 
+            horarios = [
+                "11:00 AM", "",  # Espacio vacío para agendar cita
+                "12:00 PM", "",  # Espacio vacío para agendar cita
+                "01:00 PM", "",  # Espacio vacío para agendar cita
+                "04:00 PM", "",  # Espacio vacío para agendar cita
+                "05:00 PM", "",  # Espacio vacío para agendar cita
+                "06:00 PM", "",  # Espacio vacío para agendar cita
+                "07:00 PM", "",  # Espacio vacío para agendar cita
+                "08:00 PM", ""  # Espacio vacío para agendar cita
+            ]
+        elif self.dia4:
+            if hasattr(self, "AdvertenciaDia"):
+                self.AdvertenciaDia.destroy()
+            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del viernes",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+            horarios = [
+                "11:00 AM", "",  # Espacio vacío para agendar cita
+                "12:00 PM", "",  # Espacio vacío para agendar cita
+                "01:00 PM", "",  # Espacio vacío para agendar cita
+                "04:00 PM", "",  # Espacio vacío para agendar cita
+                "05:00 PM", "",  # Espacio vacío para agendar cita
+                "06:00 PM", "",  # Espacio vacío para agendar cita
+                "07:00 PM", "",  # Espacio vacío para agendar cita
+                "08:00 PM", ""  # Espacio vacío para agendar cita
+            ]
+        elif self.dia5:
+            if hasattr(self, "AdvertenciaDia"):
+                self.AdvertenciaDia.destroy()
+            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del sabado",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+            horarios = [
+                "11:00 AM", "",  # Espacio vacío para agendar cita
+                "12:00 PM", "",  # Espacio vacío para agendar cita
+                "01:00 PM", "",  # Espacio vacío para agendar cita
+                "02:00 PM", "",  # Espacio vacío para agendar cita
+                "03:00 PM", "",  # Espacio vacío para agendar cita
+            ]
+        elif self.dia6:
+            if hasattr(self, "AdvertenciaDia"):
+                self.AdvertenciaDia.destroy()
+            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del domingo",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+            horarios = [
+                "11:00 AM", "",  # Espacio vacío para agendar cita
+                "12:00 PM", "",  # Espacio vacío para agendar cita
+                "01:00 PM", "",  # Espacio vacío para agendar cita
+                "02:00 PM", "",  # Espacio vacío para agendar cita
+                "03:00 PM", "",  # Espacio vacío para agendar cita
+            ]
+        else:
+            self.AdvertenciaDia = tk.Label(self.root, text="Selecciona un día de la semana",
+                                        font=("Helvetica", 15))
+            self.AdvertenciaDia.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+            return
         # Insertar datos en el Treeview
         for i in range(0, len(horarios), 2):
             self.treeAgenda.insert("", "end", values=(horarios[i], horarios[i + 1]))
+
+
+    def botonesPorDia(self):
+        self.diaMartesBoton = tk.Button(self.root, text="M", command=self.presionarDia1, width=8, font=("Helvetica", 17))
+        self.diaMartesBoton.place(relx=0.29, rely=0.81, anchor=tk.CENTER)
+
+        self.diaMiercolesBoton = tk.Button(self.root, text="Mie", command=self.presionarDia2, width=8, font=("Helvetica", 17))
+        self.diaMiercolesBoton.place(relx=0.39, rely=0.81, anchor=tk.CENTER)
+
+        self.diaJuevesBoton = tk.Button(self.root, text="J", command=self.presionarDia3, width=8, font=("Helvetica", 17))
+        self.diaJuevesBoton.place(relx=0.49, rely=0.81, anchor=tk.CENTER)
+
+        self.diaViernesBoton = tk.Button(self.root, text="V", command=self.presionarDia4, width=8, font=("Helvetica", 17))
+        self.diaViernesBoton.place(relx=0.59, rely=0.81, anchor=tk.CENTER)
+
+        self.diaSabadoBoton = tk.Button(self.root, text="S", command=self.presionarDia5, width=8, font=("Helvetica", 17))
+        self.diaSabadoBoton.place(relx=0.69, rely=0.81, anchor=tk.CENTER)
+
+        self.diaDomingoBoton = tk.Button(self.root, text="D", command=self.presionarDia6, width=8, font=("Helvetica", 17))
+        self.diaDomingoBoton.place(relx=0.79, rely=0.81, anchor=tk.CENTER)
+
+    def presionarDia1(self):
+        self.dia1 = True
+        self.dia2 = False
+        self.dia3 = False
+        self.dia4 = False
+        self.dia5 = False
+        self.dia6 = False
+        self.cargarCitas()
+    def presionarDia2(self):
+        self.dia1 = False
+        self.dia2 = True
+        self.dia3 = False
+        self.dia4 = False
+        self.dia5 = False
+        self.dia6 = False
+        self.cargarCitas()
+
+    def presionarDia3(self):
+        self.dia1 = False
+        self.dia2 = False
+        self.dia3 = True
+        self.dia4 = False
+        self.dia5 = False
+        self.dia6 = False
+        self.cargarCitas()
+
+    def presionarDia4(self):
+        self.dia1 = False
+        self.dia2 = False
+        self.dia3 = False
+        self.dia4 = True
+        self.dia5 = False
+        self.dia6 = False
+
+        self.cargarCitas()
+
+    def presionarDia5(self):
+        self.dia1 = False
+        self.dia2 = False
+        self.dia3 = False
+        self.dia4 = False
+        self.dia5 = True
+        self.dia6 = False
+        self.cargarCitas()
+
+    def presionarDia6(self):
+        self.dia1 = False
+        self.dia2 = False
+        self.dia3 = False
+        self.dia4 = False
+        self.dia5 = False
+        self.dia6 = True
+        self.cargarCitas()
+
     def cargarBotonesIzquierdos(self):
         self.botonBarber1 = ttk.Button(self.root, text="barbero 1", command=self.barbero1Selected, style="TButton",
                                        textvariable=self.selectBarbero1)

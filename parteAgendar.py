@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import psycopg2
+import datetime
 
 class EntryWithPlaceholder(tk.Entry):
     def __init__(self, master=None, placeholder="", *args, **kwargs):
@@ -22,6 +24,7 @@ class EntryWithPlaceholder(tk.Entry):
         if not self.get():
             self.insert(0, self.placeholder)
             self["fg"] = self.placeholder_color
+
 class agendarCita:
     def __init__(self):
         self.root = tk.Toplevel()
@@ -45,12 +48,32 @@ class agendarCita:
         self.dia5 = False
         self.dia6 = False
 
+        # Agregar opciones de servicio predefinidas
+        self.servicios = ["Corte de pelo", "Afeitado", "Coloración", "Manicura", "Tratamiento facial"]
+        self.horarios = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"]
+
+        # Configuración de la conexión a la base de datos
+        self.connection = psycopg2.connect(
+            user="postgres",
+            password="usuario",
+            host="localhost",
+            port="5432",
+            database="barberia_sistema"
+        )
+        self.cursor = self.connection.cursor()
+
+        # Variable para almacenar el servicio seleccionado
+        self.servicio_seleccionado = tk.StringVar()
+        self.servicio_seleccionado.set(self.servicios[0])
+
+        self.horario_seleccionado = tk.StringVar()
+        self.horario_seleccionado.set(self.horarios[0])
+
         self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Servicio"), show="headings")
-        self.treeAgenda.bind("<ButtonRelease-1>", self.actualizarDatosEntrada)
 
         # Establecer el tema del estilo
         self.style = ttk.Style()
-        self.style.theme_use("xpnative")  # Puedes cambiar "clam" a otros temas como "default", "alt", "classic", etc.
+        self.style.theme_use("xpnative")
         self.style.configure("TButton", relief="flat", font=("Helvetica", 16))
         # Estilo para el encabezado
         self.style.configure("Treeview.Heading", font=("Helvetica", 18, "bold"))
@@ -61,10 +84,6 @@ class agendarCita:
         # Estilo para las filas
         self.style.configure("Treeview", font=("Helvetica", 12), rowheight=55, background="#f5f5f5")
         self.style.map("Treeview", background=[("selected", "#347083")])
-
-        #cargar de imagen para boton
-        self.imagenBarber1 = tk.PhotoImage(file="A:\\python\\actividades\\sistema_barberia\\Imagenes\\barbero1.png")
-        self.imagenBarber1 = self.imagenBarber1.subsample(2, 2)  # Reduce a la mitad tanto la anchura como la altura
 
     def pantallaPrincipal(self):
         self.treeAgenda.heading("Hora", text="Hora")
@@ -79,127 +98,123 @@ class agendarCita:
         self.cargarBotonesIzquierdos()
         self.ingresarDatosCliente()
 
-    def cargarCitas(self):
-        # Horarios disponibles
-        if self.dia1:
-            if hasattr(self, "AdvertenciaDia"):
-                self.AdvertenciaDia.destroy()
-            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del martes",
-                                        font=("Helvetica", 15))
-            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
-            horarios = [
-                "11:00 AM", "",  # Espacio vacío para agendar cita
-                "12:00 PM", "",  # Espacio vacío para agendar cita
-                "01:00 PM", "",  # Espacio vacío para agendar cita
-                "04:00 PM", "",  # Espacio vacío para agendar cita
-                "05:00 PM", "",  # Espacio vacío para agendar cita
-                "06:00 PM", "",  # Espacio vacío para agendar cita
-                "07:00 PM", "",  # Espacio vacío para agendar cita
-                "08:00 PM", ""  # Espacio vacío para agendar cita
-            ]
-        elif self.dia2:
-            if hasattr(self, "AdvertenciaDia"):
-                self.AdvertenciaDia.destroy()
-            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del miercoles",
-                                        font=("Helvetica", 15))
-            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
-            horarios = [
-                "11:00 AM", "",  # Espacio vacío para agendar cita
-                "12:00 PM", "",  # Espacio vacío para agendar cita
-                "01:00 PM", "",  # Espacio vacío para agendar cita
-                "04:00 PM", "",  # Espacio vacío para agendar cita
-                "05:00 PM", "",  # Espacio vacío para agendar cita
-                "06:00 PM", "",  # Espacio vacío para agendar cita
-                "07:00 PM", "",  # Espacio vacío para agendar cita
-                "08:00 PM", ""  # Espacio vacío para agendar cita
-            ]
-        elif self.dia3:
-            if hasattr(self, "AdvertenciaDia"):
-                self.AdvertenciaDia.destroy()
-            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del jueves",
-                                        font=("Helvetica", 15))
-            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+    def insertarCita(self, nombre_cliente, servicio, hora, id_barbero, nombre_tabla):
+        self.connection = psycopg2.connect(
+            user="postgres",
+            password="usuario",
+            host="localhost",
+            port="5432",
+            database="barberia_sistema"
+        )
+        self.cursor = self.connection.cursor()
 
-            horarios = [
-                "11:00 AM", "",  # Espacio vacío para agendar cita
-                "12:00 PM", "",  # Espacio vacío para agendar cita
-                "01:00 PM", "",  # Espacio vacío para agendar cita
-                "04:00 PM", "",  # Espacio vacío para agendar cita
-                "05:00 PM", "",  # Espacio vacío para agendar cita
-                "06:00 PM", "",  # Espacio vacío para agendar cita
-                "07:00 PM", "",  # Espacio vacío para agendar cita
-                "08:00 PM", ""  # Espacio vacío para agendar cita
-            ]
+        # Obtener el id_servicio de la tabla de servicios
+        select_query = "SELECT id_servicio FROM servicios WHERE nombre_servicio = %s;"
+        self.cursor.execute(select_query, (servicio,))
+        result = self.cursor.fetchone()
+
+        if self.dia1:
+            dia = "martes"
+        elif self.dia2:
+            dia = "miércoles"
+        elif self.dia3:
+            dia = "jueves"
         elif self.dia4:
-            if hasattr(self, "AdvertenciaDia"):
-                self.AdvertenciaDia.destroy()
-            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del viernes",
-                                        font=("Helvetica", 15))
-            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
-            horarios = [
-                "11:00 AM", "",  # Espacio vacío para agendar cita
-                "12:00 PM", "",  # Espacio vacío para agendar cita
-                "01:00 PM", "",  # Espacio vacío para agendar cita
-                "04:00 PM", "",  # Espacio vacío para agendar cita
-                "05:00 PM", "",  # Espacio vacío para agendar cita
-                "06:00 PM", "",  # Espacio vacío para agendar cita
-                "07:00 PM", "",  # Espacio vacío para agendar cita
-                "08:00 PM", ""  # Espacio vacío para agendar cita
-            ]
+            dia = "viernes"
         elif self.dia5:
-            if hasattr(self, "AdvertenciaDia"):
-                self.AdvertenciaDia.destroy()
-            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del sabado",
-                                        font=("Helvetica", 15))
-            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
-            horarios = [
-                "11:00 AM", "",  # Espacio vacío para agendar cita
-                "12:00 PM", "",  # Espacio vacío para agendar cita
-                "01:00 PM", "",  # Espacio vacío para agendar cita
-                "02:00 PM", "",  # Espacio vacío para agendar cita
-                "03:00 PM", "",  # Espacio vacío para agendar cita
-            ]
+            dia = "sábado"
         elif self.dia6:
-            if hasattr(self, "AdvertenciaDia"):
-                self.AdvertenciaDia.destroy()
-            self.AdvertenciaDia = tk.Label(self.root, text="Mostrando agenda del domingo",
-                                        font=("Helvetica", 15))
-            self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
-            horarios = [
-                "11:00 AM", "",  # Espacio vacío para agendar cita
-                "12:00 PM", "",  # Espacio vacío para agendar cita
-                "01:00 PM", "",  # Espacio vacío para agendar cita
-                "02:00 PM", "",  # Espacio vacío para agendar cita
-                "03:00 PM", "",  # Espacio vacío para agendar cita
-            ]
+            dia = "domingo"
+
+        if result is not None:
+            id_servicio = result[0]
+
+            # Insertar datos en la tabla citas
+            insert_query = f"INSERT INTO {nombre_tabla} (nombre_cliente, dia, id_servicio, hora, id_barbero) VALUES (%s, %s, %s, %s, %s);"
+            self.cursor.execute(insert_query, (nombre_cliente, dia, id_servicio, hora, id_barbero))
+
+            # Hacer commit para guardar los cambios
+            self.connection.commit()
+
+            messagebox.showinfo("Éxito", "Cita agendada exitosamente.")
+        else:
+            messagebox.showerror("Error", "Servicio no encontrado en la base de datos.")
+        self.cursor.close()
+        self.connection.close()
+
+    def cargarCitas(self):
+        if self.dia1:
+            self.mostrarAgenda("citas_martes")
+        elif self.dia2:
+            self.mostrarAgenda("citas_miercoles")
+        elif self.dia3:
+            self.mostrarAgenda("citas_jueves")
+        elif self.dia4:
+            self.mostrarAgenda("citas_viernes")
+        elif self.dia5:
+            self.mostrarAgenda("citas_sabado")
+        elif self.dia6:
+            self.mostrarAgenda("citas_domingo")
         else:
             self.AdvertenciaDia = tk.Label(self.root, text="Selecciona un día de la semana",
-                                        font=("Helvetica", 15))
+                                           font=("Helvetica", 15))
             self.AdvertenciaDia.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
             return
+
+    def mostrarAgenda(self, nombre_tabla):
+        if hasattr(self, "AdvertenciaDia"):
+            self.AdvertenciaDia.destroy()
+        self.AdvertenciaDia = tk.Label(self.root, text=f"Mostrando agenda del {nombre_tabla}",
+                                       font=("Helvetica", 15))
+        self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
+
+        # Realizar consulta SQL para obtener datos de la tabla específica y filtrar por barbero
+        consulta = f"SELECT hora, nombre_cliente FROM {nombre_tabla} WHERE id_barbero = %s;"
+        self.cursor.execute(consulta, (1 if self.barberoSeleccionado == "barbero 1" else 2,))
+        resultados = self.cursor.fetchall()
+
+        # Verificar si hay resultados antes de procesarlos
+        if not resultados:
+            messagebox.showinfo("Info", "No hay citas programadas para este día.")
+            return
+
+        # Configurar horarios con datos de la consulta
+        horarios = []
+        for resultado in resultados:
+            horarios.extend([resultado[0], resultado[1]])
+
+        if self.treeAgenda:
+            self.treeAgenda.destroy()
+
+        self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Servicio"), show="headings")
+        self.treeAgenda.heading("Hora", text="Hora")
+        self.treeAgenda.heading("Servicio", text="Servicio")
+        self.treeAgenda.place(relx=0.5, rely=0.5, width=1000, height=400, anchor=tk.CENTER)
+
         # Insertar datos en el Treeview
         for i in range(0, len(horarios), 2):
             self.treeAgenda.insert("", "end", values=(horarios[i], horarios[i + 1]))
 
 
     def botonesPorDia(self):
-        self.diaMartesBoton = tk.Button(self.root, text="M", command=self.presionarDia1, width=8, font=("Helvetica", 17))
-        self.diaMartesBoton.place(relx=0.29, rely=0.81, anchor=tk.CENTER)
+        self.style.configure("TButton", relief="flat", font=("Helvetica", 17))
+        self.diaMartesBoton = ttk.Button(self.root, text="M", command=self.presionarDia1,style="TButton", width=8)
+        self.diaMartesBoton.place(relx=0.29, rely=0.80, anchor=tk.CENTER)
 
-        self.diaMiercolesBoton = tk.Button(self.root, text="Mie", command=self.presionarDia2, width=8, font=("Helvetica", 17))
-        self.diaMiercolesBoton.place(relx=0.39, rely=0.81, anchor=tk.CENTER)
+        self.diaMiercolesBoton = ttk.Button(self.root, text="Mie", command=self.presionarDia2, style="TButton", width=8)
+        self.diaMiercolesBoton.place(relx=0.39, rely=0.80, anchor=tk.CENTER)
 
-        self.diaJuevesBoton = tk.Button(self.root, text="J", command=self.presionarDia3, width=8, font=("Helvetica", 17))
-        self.diaJuevesBoton.place(relx=0.49, rely=0.81, anchor=tk.CENTER)
+        self.diaJuevesBoton = ttk.Button(self.root, text="J", command=self.presionarDia3, style="TButton", width=8)
+        self.diaJuevesBoton.place(relx=0.49, rely=0.80, anchor=tk.CENTER)
 
-        self.diaViernesBoton = tk.Button(self.root, text="V", command=self.presionarDia4, width=8, font=("Helvetica", 17))
-        self.diaViernesBoton.place(relx=0.59, rely=0.81, anchor=tk.CENTER)
+        self.diaViernesBoton = ttk.Button(self.root, text="V", command=self.presionarDia4,style="TButton", width=8)
+        self.diaViernesBoton.place(relx=0.59, rely=0.80, anchor=tk.CENTER)
 
-        self.diaSabadoBoton = tk.Button(self.root, text="S", command=self.presionarDia5, width=8, font=("Helvetica", 17))
-        self.diaSabadoBoton.place(relx=0.69, rely=0.81, anchor=tk.CENTER)
+        self.diaSabadoBoton = ttk.Button(self.root, text="S", command=self.presionarDia5,style="TButton", width=8)
+        self.diaSabadoBoton.place(relx=0.69, rely=0.80, anchor=tk.CENTER)
 
-        self.diaDomingoBoton = tk.Button(self.root, text="D", command=self.presionarDia6, width=8, font=("Helvetica", 17))
-        self.diaDomingoBoton.place(relx=0.79, rely=0.81, anchor=tk.CENTER)
+        self.diaDomingoBoton = ttk.Button(self.root, text="D", command=self.presionarDia6,style="TButton", width=8)
+        self.diaDomingoBoton.place(relx=0.79, rely=0.80, anchor=tk.CENTER)
 
     def presionarDia1(self):
         self.dia1 = True
@@ -280,30 +295,35 @@ class agendarCita:
     def ingresarDatosCliente(self):
         self.placeholder_Nombre = EntryWithPlaceholder(self.root, placeholder="Nombre del cliente", width=30, font=("Helvetica", 18))
         self.placeholder_Nombre.place(relx=0.2, rely=0.9, anchor=tk.CENTER)
-        self.placeholder_Servicio = EntryWithPlaceholder(self.root, placeholder="Servicio", width=30, font=("Helvetica", 18))
-        self.placeholder_Servicio.place(relx=0.55, rely=0.9, anchor=tk.CENTER)
+        self.servicio_combobox = ttk.Combobox(self.root, textvariable=self.servicio_seleccionado, width=15,font=("Helvetica", 18), values=self.servicios)
+        self.servicio_combobox.place(relx=0.45, rely=0.9, anchor=tk.CENTER)
+
+        self.horario = ttk.Combobox(self.root, textvariable=self.horario_seleccionado, width=15,font=("Helvetica", 18), values=self.horarios)
+        self.horario.place(relx=0.65, rely=0.9, anchor=tk.CENTER)
 
         self.botonListo = ttk.Button(self.root, text="Listo", command=self.mandarDatosAlServer, style="BotonListo.TButton")
         self.botonListo.place(relx=0.9, rely=0.9, anchor=tk.CENTER)
 
     def mandarDatosAlServer(self):
-        print("Los datos a mandar al server son:")
-        print("barbero:", self.barberoSeleccionado)
-        print("Nombre:", str(self.placeholder_Nombre.get()))
-        print("Servicio:", str(self.placeholder_Servicio.get()))
-        print("Hora:", str(self.treeAgenda.item(self.item, "values")[0]))
+        nombre_cliente = str(self.placeholder_Nombre.get())
+        servicio = str(self.servicio_seleccionado.get())
+        hora = str(self.horario_seleccionado.get())
 
+        # Obtener el id_barbero según el nombre seleccionado
+        id_barbero = 1 if self.barberoSeleccionado == "barbero 1" else 2
 
-    def actualizarDatosEntrada(self, event):
-        # Obtener la fila seleccionada del Treeview
-        self.item = self.treeAgenda.selection()[0]
+        # Determinar qué día está seleccionado y llamar a la función insertarCita con el nombre de la tabla correspondiente
+        if self.dia1:
+            self.insertarCita(nombre_cliente, servicio, hora, id_barbero, "citas_martes")
+        elif self.dia2:
+            self.insertarCita(nombre_cliente, servicio, hora, id_barbero, "citas_miercoles")
+        elif self.dia3:
+            self.insertarCita(nombre_cliente, servicio, hora, id_barbero, "citas_jueves")
+        elif self.dia4:
+            self.insertarCita(nombre_cliente, servicio, hora, id_barbero, "citas_viernes")
+        elif self.dia5:
+            self.insertarCita(nombre_cliente, servicio, hora, id_barbero, "citas_sabado")
+        elif self.dia6:
+            self.insertarCita(nombre_cliente, servicio, hora, id_barbero, "citas_domingo")
 
-        # Obtener el servicio del cuadro de entrada
-        servicio = self.placeholder_Servicio.get()
-
-        # Verificar si se ha ingresado el servicio en el cuadro de entrada
-        if servicio:
-            # Actualizar la columna de "Servicio" en la fila seleccionada del Treeview
-            self.treeAgenda.item(self.item, values=(self.treeAgenda.item(self.item, "values")[0], servicio))
-        else:
-            messagebox.showerror("Error", "Por favor, ingrese el servicio en el cuadro de entrada.")
+        self.root.destroy()

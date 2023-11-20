@@ -11,7 +11,10 @@ class interfaz:
         self.root = tk.Tk()
         self.root.geometry("1280x720")
         self.root.title("Barbería del Alexis :D")
+        self.cargarTodo()
 
+
+    def cargarTodo(self):
         # Crear un objeto Treeview
         self.tree = ttk.Treeview(self.root, columns=("Nombre Barbero", "Nombre Cliente", "Hora", "Servicio"),
                                  show="headings")
@@ -92,7 +95,7 @@ class interfaz:
 
     def botonReload(self):
         self.style.configure("TButton", relief="flat", font=("Helvetica", 16))
-        botonRecargar = ttk.Button(self.root, text="Recargar", command=self.__init__)
+        botonRecargar = ttk.Button(self.root, text="Recargar", command=self.cargarTodo)
         botonRecargar.place(relx=0.95, rely=0.3, anchor=tk.CENTER)
     def tablaPrincipal_Citas(self):
         # Configurar las columnas

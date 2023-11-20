@@ -69,7 +69,7 @@ class agendarCita:
         self.horario_seleccionado = tk.StringVar()
         self.horario_seleccionado.set(self.horarios[0])
 
-        self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Servicio"), show="headings")
+        self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Cliente"), show="headings")
 
         # Establecer el tema del estilo
         self.style = ttk.Style()
@@ -87,7 +87,7 @@ class agendarCita:
 
     def pantallaPrincipal(self):
         self.treeAgenda.heading("Hora", text="Hora")
-        self.treeAgenda.heading("Servicio", text="Servicio")
+        self.treeAgenda.heading("Cliente", text="Cliente")
 
         self.Advertencia = tk.Label(self.root, text= "Selecciona un barbero antes que todo...", font=("Helvetica", 12))
         self.Advertencia.place(relx=0.5, rely=0.1, anchor=tk.CENTER)
@@ -186,9 +186,9 @@ class agendarCita:
         if self.treeAgenda:
             self.treeAgenda.destroy()
 
-        self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Servicio"), show="headings")
+        self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Cliente"), show="headings")
         self.treeAgenda.heading("Hora", text="Hora")
-        self.treeAgenda.heading("Servicio", text="Servicio")
+        self.treeAgenda.heading("Cliente", text="Cliente")
         self.treeAgenda.place(relx=0.5, rely=0.5, width=1000, height=400, anchor=tk.CENTER)
 
         # Insertar datos en el Treeview

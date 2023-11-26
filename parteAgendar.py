@@ -98,6 +98,8 @@ class agendarCita:
         self.cargarBotonesIzquierdos()
         self.ingresarDatosCliente()
 
+
+
     def insertarCita(self, nombre_cliente, servicio, hora, id_barbero, nombre_tabla):
         self.connection = psycopg2.connect(
             user="postgres",
@@ -164,8 +166,7 @@ class agendarCita:
     def mostrarAgenda(self, nombre_tabla):
         if hasattr(self, "AdvertenciaDia"):
             self.AdvertenciaDia.destroy()
-        self.AdvertenciaDia = tk.Label(self.root, text=f"Mostrando agenda del {nombre_tabla}",
-                                       font=("Helvetica", 15))
+        self.AdvertenciaDia = tk.Label(self.root, text=f"Mostrando agenda del {nombre_tabla}", font=("Helvetica", 15))
         self.AdvertenciaDia.place(relx=0.5, rely=0.20, anchor=tk.CENTER)
 
         # Realizar consulta SQL para obtener datos de la tabla específica y filtrar por barbero
@@ -174,26 +175,27 @@ class agendarCita:
         resultados = self.cursor.fetchall()
 
         # Verificar si hay resultados antes de procesarlos
-        if not resultados:
-            messagebox.showinfo("Info", "No hay citas programadas para este día.")
-            return
+        if resultados:
+            if self.treeAgenda:
+                self.treeAgenda.destroy()
 
-        # Configurar horarios con datos de la consulta
-        horarios = []
-        for resultado in resultados:
-            horarios.extend([resultado[0], resultado[1]])
+            self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Cliente"), show="headings")
+            self.treeAgenda.heading("Hora", text="Hora")
+            self.treeAgenda.heading("Cliente", text="Cliente")
+            self.treeAgenda.place(relx=0.5, rely=0.5, width=1000, height=400, anchor=tk.CENTER)
 
-        if self.treeAgenda:
-            self.treeAgenda.destroy()
+            # Insertar datos en el Treeview
+            for resultado in resultados:
+                self.treeAgenda.insert("", "end", values=(resultado[0], resultado[1]))
+        else:
+            if self.treeAgenda:
+                self.treeAgenda.destroy()
 
-        self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Cliente"), show="headings")
-        self.treeAgenda.heading("Hora", text="Hora")
-        self.treeAgenda.heading("Cliente", text="Cliente")
-        self.treeAgenda.place(relx=0.5, rely=0.5, width=1000, height=400, anchor=tk.CENTER)
+            self.treeAgenda = ttk.Treeview(self.root, columns=("Hora", "Cliente"), show="headings")
+            self.treeAgenda.heading("Hora", text="Hora")
+            self.treeAgenda.heading("Cliente", text="Cliente")
+            self.treeAgenda.place(relx=0.5, rely=0.5, width=1000, height=400, anchor=tk.CENTER)
 
-        # Insertar datos en el Treeview
-        for i in range(0, len(horarios), 2):
-            self.treeAgenda.insert("", "end", values=(horarios[i], horarios[i + 1]))
 
 
     def botonesPorDia(self):
